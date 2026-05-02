@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Review Assistant — Editor & Reviewer</title>
+<meta name="description" content="Write, run, and review code with instant feedback. Supports JavaScript, Python, TypeScript, Java, and C++.">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="icon" type="image/png" href="assets/icons/icon.png">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════ -->
+<header class="site-header" id="siteHeader">
+  <a class="logo" href="#">
+    <div class="logo-icon"><img src="assets/icons/icon.png" alt="Logo" style="width: 100%; height: 100%; border-radius: inherit; object-fit: cover;"></div>
+    <span class="logo-text">Code<span>Review</span></span>
+  </a>
+
+  <div class="header-center">
+  </div>
+
+  <div class="header-actions">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
+      <span class="light-icon">☀️</span>
+      <span class="dark-icon">🌙</span>
+      <div class="theme-switch-thumb"></div>
+    </button>
+    <button class="export-btn" id="exportBtn" disabled onclick="handleExport()">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v9M4 7l4 4 4-4M2 13h12"/></svg>
+      Export
+    </button>
+    <button class="analyze-header-btn" id="analyzeBtn" onclick="runAnalysis()">
+      🔍 Review
+    </button>
+    <button class="run-btn" id="runBtn" onclick="runCode()">
+      ▶ Run
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     MAIN SPLIT-PANE LAYOUT
+     ═══════════════════════════════════════════ -->
+<div class="app-container" id="appContainer">
+
+  <!-- ── LEFT PANEL: Code Editor ─────────── -->
+  <div class="panel-left" id="panelLeft">
+    <div class="panel-header">
+      <div class="panel-header-left">
+        <select class="lang-select" id="langSelect" onchange="loadExample()">
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="typescript">TypeScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+        </select>
+      </div>
+      <div class="panel-header-right">
+        <button class="btn-ghost" onclick="loadExample()">📂 Example</button>
+        <button class="btn-ghost" onclick="clearEditor()">✕ Clear</button>
+      </div>
+    </div>
+
+    <div class="code-area-wrap">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <textarea class="code-editor" id="codeEditor" spellcheck="false" placeholder="Write or paste your code here..."></textarea>
+    </div>
+
+    <div class="editor-footer">
+      <div class="editor-meta">
+        <span id="lineCount">Ln 0</span>
+        <span id="charCount">Ch 0</span>
+        <span id="langLabel">JavaScript</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VERTICAL RESIZER ────────────────── -->
+  <div class="resizer-vertical" id="resizerVertical"></div>
+
+  <!-- ── RIGHT PANEL ─────────────────────── -->
+  <div class="panel-right" id="panelRight">
+
+    <!-- ── TOP RIGHT: Output Console ─────── -->
+    <div class="panel-output" id="panelOutput">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <span style="color:var(--console-info);">▸</span> OUTPUT
+        </div>
+        <div class="panel-header-right">
+          <button class="clear-console-btn" onclick="clearConsole()">Clear</button>
+        </div>
+      </div>
+
+      <div class="console-body" id="consoleBody">
+        <div class="console-welcome">
+          <div class="icon">⌨</div>
+          <div class="title">Output Console</div>
+          <div>Run your code to see output here</div>
+        </div>
+      </div>
+
+      <div class="console-status">
+        <div class="dot idle" id="consoleDot"></div>
+        <span class="console-status-text" id="consoleStatusText">Ready</span>
+      </div>
+    </div>
+
+    <!-- ── HORIZONTAL RESIZER ────────────── -->
+    <div class="resizer-horizontal" id="resizerHorizontal"></div>
+
+    <!-- ── BOTTOM RIGHT: Code Review ─────── -->
+    <div class="panel-review" id="panelReview">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <span style="color:var(--accent);">◆</span> CODE REVIEW
+        </div>
+      </div>
+
+      <div class="review-body" id="reviewBody">
+        <div class="review-welcome">
+          <div class="icon">📝</div>
+          <div class="title">Ready to Review</div>
+          <div class="desc">Click <strong>🔍 Review</strong> to analyze your code for quality, errors, and improvement suggestions.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-right -->
+
+</div><!-- /app-container -->
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS (External)
+     ═══════════════════════════════════════════ -->
+<script src="scripts/editor.js"></script>
+<script src="scripts/analyze.js"></script>
+<script src="scripts/score.js"></script>
+<script src="scripts/app.js"></script>
+<script>
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initEditor();
+    initResizers();
+
+    // Update language label when select changes
+    const langSelect = document.getElementById('langSelect');
+    const langLabel = document.getElementById('langLabel');
+    if (langSelect && langLabel) {
+      langSelect.addEventListener('change', () => {
+        const names = { javascript: 'JavaScript', python: 'Python', typescript: 'TypeScript', java: 'Java', cpp: 'C++' };
+        langLabel.textContent = names[langSelect.value] || langSelect.value;
+      });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+Enter or Cmd+Enter: Run
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runCode();
+      }
+      // Ctrl+Shift+Enter: Analyze
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'Enter') {
+        e.preventDefault();
+        runAnalysis();
+      }
+    });
+  });
+
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  }
+</script>
+</body>
+</html>

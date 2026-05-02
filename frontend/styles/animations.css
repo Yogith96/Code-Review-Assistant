@@ -1,0 +1,31 @@
+/* ════════════════════════════════════════════════════════
+   animations.css — Shared animation keyframes
+   ════════════════════════════════════════════════════════ */
+
+/* Fade-up entrance animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Slide-in for review items */
+@keyframes slideIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Spinner rotation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Pulse for status dots */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* Glow effect */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(91,79,207,0.3); }
+  50%      { box-shadow: 0 0 12px rgba(91,79,207,0.6); }
+}

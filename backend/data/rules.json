@@ -1,0 +1,418 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-02-03",
+  "categories": {
+    "beginner_mistakes": {
+      "priority": "high",
+      "rules": [
+        {
+          "id": "BM001",
+          "name": "var_usage",
+          "severity": "error",
+          "pattern": "\\bvar\\s+\\w+",
+          "message": "Using 'var' is outdated. Use 'let' or 'const' instead.",
+          "explanation": "The 'var' keyword has function scope and can lead to bugs. Modern JavaScript uses 'let' for variables that change and 'const' for constants. This makes code more predictable and easier to debug.",
+          "example": {
+            "bad": "var count = 0;",
+            "good": "let count = 0; // or const count = 0; if it doesn't change"
+          },
+          "points_deduction": 5
+        },
+        {
+          "id": "BM002",
+          "name": "long_function",
+          "severity": "warning",
+          "threshold": 50,
+          "message": "Function is too long (>{threshold} lines). Consider breaking it into smaller functions.",
+          "explanation": "Long functions are hard to understand, test, and maintain. A good rule of thumb is to keep functions under 30-50 lines. Each function should do one thing well.",
+          "example": {
+            "bad": "function doEverything() { /* 100+ lines */ }",
+            "good": "function processData() { validateInput(); transformData(); saveResult(); }"
+          },
+          "points_deduction": 8
+        },
+        {
+          "id": "BM003",
+          "name": "poor_variable_names",
+          "severity": "warning",
+          "pattern": "\\b(a|b|c|x|y|z|temp|data|item|value|num|str)\\b\\s*=",
+          "message": "Variable name is too generic. Use descriptive names.",
+          "explanation": "Good variable names make code self-documenting. Instead of 'x', use 'userAge' or 'totalPrice'. Your code should read like a story.",
+          "example": {
+            "bad": "let x = 5;",
+            "good": "let userAge = 5; // or maxRetries, itemCount, etc."
+          },
+          "points_deduction": 3
+        },
+        {
+          "id": "BM004",
+          "name": "single_letter_vars",
+          "severity": "warning",
+          "pattern": "\\b(let|const|var)\\s+[a-z]\\s*=",
+          "message": "Single-letter variable names reduce readability (except for loop counters).",
+          "explanation": "While 'i', 'j', 'k' are acceptable in loops, other single-letter variables make code cryptic. Always prefer descriptive names.",
+          "example": {
+            "bad": "let n = users.length;",
+            "good": "let userCount = users.length;"
+          },
+          "points_deduction": 3
+        },
+        {
+          "id": "BM005",
+          "name": "console_log_left",
+          "severity": "suggestion",
+          "pattern": "console\\.log\\(",
+          "message": "Debug console.log() statements should be removed before production.",
+          "explanation": "Console logs are great for debugging, but they should be removed or replaced with proper logging before deploying code. They can slow down performance and expose sensitive data.",
+          "example": {
+            "bad": "console.log('Debug:', userData);",
+            "good": "// Use a logger: logger.debug('User data processed');"
+          },
+          "points_deduction": 2
+        },
+        {
+          "id": "BM006",
+          "name": "no_error_handling",
+          "severity": "error",
+          "pattern": "(?:fetch|async\\s+function|Promise)(?!.*catch)",
+          "message": "Async operations should include error handling (.catch() or try/catch).",
+          "explanation": "When making API calls or async operations, things can go wrong. Always handle errors gracefully to prevent crashes and provide better user experience.",
+          "example": {
+            "bad": "fetch('/api/data').then(res => res.json());",
+            "good": "fetch('/api/data').then(res => res.json()).catch(err => handleError(err));"
+          },
+          "points_deduction": 10
+        },
+        {
+          "id": "BM007",
+          "name": "long_lines",
+          "severity": "suggestion",
+          "threshold": 120,
+          "message": "Line is too long (>{threshold} characters). Consider breaking it up.",
+          "explanation": "Long lines are hard to read, especially on smaller screens. Most style guides recommend keeping lines under 80-120 characters.",
+          "example": {
+            "bad": "const result = someVeryLongFunctionName(param1, param2, param3, param4, param5, param6);",
+            "good": "const result = someVeryLongFunctionName(\n  param1, param2, param3,\n  param4, param5, param6\n);"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BM008",
+          "name": "magic_numbers",
+          "severity": "warning",
+          "pattern": "(?<!\\d)\\d{3,}(?!\\d)",
+          "message": "Magic numbers should be named constants for clarity.",
+          "explanation": "Numbers like 86400 or 3600 have meaning, but readers won't know what. Use named constants: const SECONDS_IN_DAY = 86400;",
+          "example": {
+            "bad": "setTimeout(callback, 3600000);",
+            "good": "const ONE_HOUR_MS = 3600000; setTimeout(callback, ONE_HOUR_MS);"
+          },
+          "points_deduction": 4
+        }
+      ]
+    },
+    "code_smells": {
+      "priority": "high",
+      "rules": [
+        {
+          "id": "CS001",
+          "name": "deep_nesting",
+          "severity": "warning",
+          "threshold": 4,
+          "message": "Too many nested blocks (>{threshold} levels). Consider refactoring.",
+          "explanation": "Deep nesting creates 'arrow code' that's hard to follow. Use early returns, extract functions, or refactor logic to reduce nesting.",
+          "example": {
+            "bad": "if (a) { if (b) { if (c) { if (d) { /* code */ } } } }",
+            "good": "if (!a) return;\nif (!b) return;\nif (!c) return;\nif (!d) return;\n/* code */"
+          },
+          "points_deduction": 7
+        },
+        {
+          "id": "CS002",
+          "name": "duplicate_code",
+          "severity": "warning",
+          "message": "Duplicate code blocks detected. Consider extracting to a reusable function.",
+          "explanation": "Copy-pasting code creates maintenance nightmares. If you need to fix a bug, you'll have to fix it in multiple places. Extract common logic into functions.",
+          "example": {
+            "bad": "// Same validation in 3 places",
+            "good": "function validateUser(user) { /* validation logic */ }"
+          },
+          "points_deduction": 6
+        },
+        {
+          "id": "CS003",
+          "name": "hardcoded_values",
+          "severity": "warning",
+          "pattern": "(['\"])(https?://[^'\"]+|/api/[^'\"]+)\\1",
+          "message": "Hardcoded URLs or API endpoints. Use configuration constants.",
+          "explanation": "Hardcoded values make it hard to change settings across environments (dev, staging, production). Use config files or environment variables.",
+          "example": {
+            "bad": "fetch('https://api.example.com/users');",
+            "good": "const API_URL = config.apiUrl; fetch(`${API_URL}/users`);"
+          },
+          "points_deduction": 5
+        },
+
+        {
+          "id": "CS005",
+          "name": "commented_code",
+          "severity": "suggestion",
+          "pattern": "^\\s*//\\s*(?:function|const|let|var|if|for|while)",
+          "message": "Commented-out code should be removed. Use version control instead.",
+          "explanation": "Commented code creates confusion. Is it important? Should it be restored? Use Git to track old code - delete commented sections.",
+          "example": {
+            "bad": "// function oldFunction() { /* ... */ }",
+            "good": "// If you need old code, check Git history"
+          },
+          "points_deduction": 2
+        },
+        {
+          "id": "CS006",
+          "name": "large_function_params",
+          "severity": "warning",
+          "threshold": 4,
+          "message": "Function has too many parameters (>{threshold}). Consider using an options object.",
+          "explanation": "Functions with many parameters are hard to call correctly. Use an object parameter to make calls clearer and more flexible.",
+          "example": {
+            "bad": "function createUser(name, email, age, country, phone, address) { }",
+            "good": "function createUser({ name, email, age, country, phone, address }) { }"
+          },
+          "points_deduction": 5
+        },
+        {
+          "id": "CS007",
+          "name": "callback_hell",
+          "severity": "error",
+          "pattern": "\\.then\\([^)]*\\.then\\([^)]*\\.then\\(",
+          "message": "Nested promises detected (callback hell). Use async/await instead.",
+          "explanation": "Nested .then() chains are hard to read. Modern JavaScript supports async/await which makes async code look synchronous and easier to understand.",
+          "example": {
+            "bad": "fetch().then(r => r.json()).then(d => fetch(d.url)).then(r => r.json());",
+            "good": "const response = await fetch(); const data = await response.json();"
+          },
+          "points_deduction": 8
+        },
+        {
+          "id": "CS008",
+          "name": "global_variables",
+          "severity": "warning",
+          "pattern": "^(?!\\s*(?:const|let|var|function|class|import|export))\\w+\\s*=",
+          "message": "Avoid global variables. They can cause conflicts and make testing difficult.",
+          "explanation": "Global variables pollute the global namespace and can be modified anywhere, making bugs hard to track. Use modules or encapsulation instead.",
+          "example": {
+            "bad": "userData = {}; // global",
+            "good": "const userData = {}; // or export const userData = {};"
+          },
+          "points_deduction": 6
+        },
+        {
+          "id": "CS009",
+          "name": "empty_catch",
+          "severity": "error",
+          "pattern": "catch\\s*\\([^)]*\\)\\s*\\{\\s*\\}",
+          "message": "Empty catch block silently swallows errors. At least log the error.",
+          "explanation": "Empty catch blocks hide problems. You won't know when errors occur. Always log errors or handle them appropriately.",
+          "example": {
+            "bad": "try { risky(); } catch(e) { }",
+            "good": "try { risky(); } catch(e) { console.error('Error:', e); }"
+          },
+          "points_deduction": 10
+        },
+        {
+          "id": "CS010",
+          "name": "nested_ternary",
+          "severity": "warning",
+          "pattern": "\\?[^:]*\\?[^:]*:",
+          "message": "Nested ternary operators are hard to read. Use if-else statements instead.",
+          "explanation": "While ternary operators are concise, nesting them creates confusion. Use clear if-else statements for better readability.",
+          "example": {
+            "bad": "const result = a ? b ? c : d : e;",
+            "good": "let result; if (a) { result = b ? c : d; } else { result = e; }"
+          },
+          "points_deduction": 4
+        }
+      ]
+    },
+    "best_practices": {
+      "priority": "medium",
+      "rules": [
+        {
+          "id": "BP001",
+          "name": "use_strict_equality",
+          "severity": "warning",
+          "pattern": "(?<!!)={2}(?!=)|!={1}(?!=)",
+          "message": "Use strict equality (=== or !==) instead of loose equality (== or !=).",
+          "explanation": "Loose equality (==) performs type coercion which can lead to unexpected results. Always use === for clearer, bug-free comparisons.",
+          "example": {
+            "bad": "if (value == 0) { }",
+            "good": "if (value === 0) { }"
+          },
+          "points_deduction": 3
+        },
+        {
+          "id": "BP002",
+          "name": "arrow_function_preferred",
+          "severity": "suggestion",
+          "pattern": "function\\s*\\([^)]*\\)\\s*\\{",
+          "message": "Consider using arrow functions for cleaner syntax and lexical 'this'.",
+          "explanation": "Arrow functions have shorter syntax and don't bind their own 'this', making them ideal for callbacks and functional programming.",
+          "example": {
+            "bad": "array.map(function(item) { return item * 2; });",
+            "good": "array.map(item => item * 2);"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BP003",
+          "name": "use_const_default",
+          "severity": "suggestion",
+          "pattern": "let\\s+(\\w+)\\s*=[^;]+;(?!.*\\1\\s*=)",
+          "message": "Variable is never reassigned. Use 'const' instead of 'let'.",
+          "explanation": "Using 'const' by default makes code more predictable. It signals that the value won't change, making code easier to reason about.",
+          "example": {
+            "bad": "let name = 'John'; // never reassigned",
+            "good": "const name = 'John';"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BP004",
+          "name": "template_literals",
+          "severity": "suggestion",
+          "pattern": "(['\"])[^'\"]*\\+[^'\"]*\\1",
+          "message": "Use template literals instead of string concatenation.",
+          "explanation": "Template literals (backticks) make string building cleaner and more readable, especially with multiple variables.",
+          "example": {
+            "bad": "const msg = 'Hello ' + name + '!';",
+            "good": "const msg = `Hello ${name}!`;"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BP005",
+          "name": "destructuring",
+          "severity": "suggestion",
+          "pattern": "const\\s+(\\w+)\\s*=\\s*(\\w+)\\.(\\w+)",
+          "message": "Consider using destructuring for cleaner object property access.",
+          "explanation": "Destructuring extracts multiple properties in one line, making code more concise and declarative.",
+          "example": {
+            "bad": "const name = user.name; const age = user.age;",
+            "good": "const { name, age } = user;"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BP006",
+          "name": "default_parameters",
+          "severity": "suggestion",
+          "pattern": "function\\s+\\w+\\([^)]*\\)\\s*\\{[^}]*\\|\\|",
+          "message": "Use default parameters instead of || fallback pattern.",
+          "explanation": "ES6 default parameters are cleaner and handle undefined better than the || pattern.",
+          "example": {
+            "bad": "function greet(name) { name = name || 'Guest'; }",
+            "good": "function greet(name = 'Guest') { }"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BP007",
+          "name": "optional_chaining",
+          "severity": "suggestion",
+          "pattern": "&&\\s*\\w+\\.\\w+",
+          "message": "Consider using optional chaining (?.) for safer property access.",
+          "explanation": "Optional chaining prevents errors when accessing nested properties that might be null or undefined.",
+          "example": {
+            "bad": "const city = user && user.address && user.address.city;",
+            "good": "const city = user?.address?.city;"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BP008",
+          "name": "spread_operator",
+          "severity": "suggestion",
+          "pattern": "Object\\.assign\\(\\{\\}",
+          "message": "Use spread operator (...) instead of Object.assign for cleaner syntax.",
+          "explanation": "The spread operator is more modern and readable for copying/merging objects and arrays.",
+          "example": {
+            "bad": "const newObj = Object.assign({}, obj, { key: value });",
+            "good": "const newObj = { ...obj, key: value };"
+          },
+          "points_deduction": 1
+        }
+      ]
+    },
+    "naming_conventions": {
+      "priority": "medium",
+      "rules": [
+        {
+          "id": "NC001",
+          "name": "camelCase_functions",
+          "severity": "suggestion",
+          "pattern": "function\\s+[A-Z]\\w*\\(",
+          "message": "Function names should use camelCase, not PascalCase.",
+          "explanation": "JavaScript convention is camelCase for functions/variables and PascalCase for classes/constructors.",
+          "example": {
+            "bad": "function CalculateTotal() { }",
+            "good": "function calculateTotal() { }"
+          },
+          "points_deduction": 2
+        },
+        {
+          "id": "NC002",
+          "name": "PascalCase_classes",
+          "severity": "suggestion",
+          "pattern": "class\\s+[a-z]\\w*",
+          "message": "Class names should use PascalCase.",
+          "explanation": "Classes and constructors should start with capital letters to distinguish them from regular functions.",
+          "example": {
+            "bad": "class userModel { }",
+            "good": "class UserModel { }"
+          },
+          "points_deduction": 2
+        },
+        {
+          "id": "NC003",
+          "name": "CONSTANTS_UPPERCASE",
+          "severity": "suggestion",
+          "pattern": "const\\s+[a-z][a-z_]*\\s*=\\s*(?:['\"]|\\d|true|false)",
+          "message": "Constants should use UPPER_SNAKE_CASE.",
+          "explanation": "ALL_CAPS naming makes true constants (values that never change) stand out in code.",
+          "example": {
+            "bad": "const maxUsers = 100;",
+            "good": "const MAX_USERS = 100;"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "NC004",
+          "name": "boolean_prefix",
+          "severity": "suggestion",
+          "pattern": "(?:const|let|var)\\s+(\\w+)\\s*=\\s*(?:true|false)",
+          "message": "Boolean variables should start with is/has/can/should.",
+          "explanation": "Prefixes like 'is', 'has', 'can' make boolean nature clear: isActive, hasPermission, canEdit.",
+          "example": {
+            "bad": "const active = true;",
+            "good": "const isActive = true;"
+          },
+          "points_deduction": 2
+        }
+      ]
+    }
+  },
+  "scoring_weights": {
+    "errors": -10,
+    "warnings": -5,
+    "suggestions": -2,
+    "readability_factor": 0.3,
+    "structure_factor": 0.4,
+    "naming_factor": 0.3,
+    "base_score": 100
+  },
+  "thresholds": {
+    "excellent": 90,
+    "good": 70,
+    "needs_improvement": 50,
+    "poor": 30
+  }
+}

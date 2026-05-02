@@ -1,0 +1,201 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-02-03",
+  "categories": {
+    "beginner_mistakes": {
+      "priority": "high",
+      "rules": [
+        {
+          "id": "BM001",
+          "name": "var_usage",
+          "severity": "error",
+          "pattern": "\\bvar\\s+\\w+",
+          "message": "Using 'var' is outdated. Use 'let' or 'const' instead.",
+          "explanation": "The 'var' keyword has function scope and can lead to bugs. Modern JavaScript uses 'let' for variables that change and 'const' for constants. This makes code more predictable and easier to debug.",
+          "example": {
+            "bad": "var count = 0;",
+            "good": "let count = 0; // or const count = 0; if it doesn't change"
+          },
+          "points_deduction": 5
+        },
+        {
+          "id": "BM002",
+          "name": "long_function",
+          "severity": "warning",
+          "threshold": 50,
+          "message": "Function is too long (>{threshold} lines). Consider breaking it into smaller functions.",
+          "explanation": "Long functions are hard to understand, test, and maintain. A good rule of thumb is to keep functions under 30-50 lines. Each function should do one thing well.",
+          "example": {
+            "bad": "function doEverything() { /* 100+ lines */ }",
+            "good": "function processData() { validateInput(); transformData(); saveResult(); }"
+          },
+          "points_deduction": 8
+        },
+        {
+          "id": "BM003",
+          "name": "poor_variable_names",
+          "severity": "warning",
+          "pattern": "\\b(a|b|c|x|y|z|temp|data|item|value|num|str)\\b\\s*=",
+          "message": "Variable name is too generic. Use descriptive names.",
+          "explanation": "Good variable names make code self-documenting. Instead of 'x', use 'userAge' or 'totalPrice'. Your code should read like a story.",
+          "example": {
+            "bad": "let x = 5;",
+            "good": "let userAge = 5; // or maxRetries, itemCount, etc."
+          },
+          "points_deduction": 3
+        },
+        {
+          "id": "BM004",
+          "name": "single_letter_vars",
+          "severity": "warning",
+          "pattern": "\\b(let|const|var)\\s+[a-z]\\s*=",
+          "message": "Single-letter variable names reduce readability (except for loop counters).",
+          "explanation": "While 'i', 'j', 'k' are acceptable in loops, other single-letter variables make code cryptic. Always prefer descriptive names.",
+          "example": {
+            "bad": "let n = users.length;",
+            "good": "let userCount = users.length;"
+          },
+          "points_deduction": 3
+        },
+        {
+          "id": "BM005",
+          "name": "console_log_left",
+          "severity": "suggestion",
+          "pattern": "console\\.log\\(",
+          "message": "Debug console.log() statements should be removed before production.",
+          "explanation": "Console logs are great for debugging, but they should be removed or replaced with proper logging before deploying code. They can slow down performance and expose sensitive data.",
+          "example": {
+            "bad": "console.log('Debug:', userData);",
+            "good": "// Use a logger: logger.debug('User data processed');"
+          },
+          "points_deduction": 2
+        },
+        {
+          "id": "BM006",
+          "name": "no_error_handling",
+          "severity": "error",
+          "pattern": "(?:fetch|async\\s+function|Promise)(?!.*catch)",
+          "message": "Async operations should include error handling (.catch() or try/catch).",
+          "explanation": "When making API calls or async operations, things can go wrong. Always handle errors gracefully to prevent crashes and provide better user experience.",
+          "example": {
+            "bad": "fetch('/api/data').then(res => res.json());",
+            "good": "fetch('/api/data').then(res => res.json()).catch(err => handleError(err));"
+          },
+          "points_deduction": 10
+        },
+        {
+          "id": "BM007",
+          "name": "long_lines",
+          "severity": "suggestion",
+          "threshold": 120,
+          "message": "Line is too long (>{threshold} characters). Consider breaking it up.",
+          "explanation": "Long lines are hard to read, especially on smaller screens. Most style guides recommend keeping lines under 80-120 characters.",
+          "example": {
+            "bad": "const result = someVeryLongFunctionName(param1, param2, param3, param4, param5, param6);",
+            "good": "const result = someVeryLongFunctionName(\n  param1, param2, param3,\n  param4, param5, param6\n);"
+          },
+          "points_deduction": 1
+        },
+        {
+          "id": "BM008",
+          "name": "magic_numbers",
+          "severity": "warning",
+          "pattern": "(?<!\\d)\\d{3,}(?!\\d)",
+          "message": "Magic numbers should be named constants for clarity.",
+          "explanation": "Numbers like 86400 or 3600 have meaning, but readers won't know what. Use named constants: const SECONDS_IN_DAY = 86400;",
+          "example": {
+            "bad": "setTimeout(callback, 3600000);",
+            "good": "const ONE_HOUR_MS = 3600000; setTimeout(callback, ONE_HOUR_MS);"
+          },
+          "points_deduction": 4
+        }
+      ]
+    },
+    "code_smells": {
+      "priority": "high",
+      "rules": [
+        {
+          "id": "CS001",
+          "name": "deep_nesting",
+          "severity": "warning",
+          "threshold": 4,
+          "message": "Too many nested blocks (>{threshold} levels). Consider refactoring.",
+          "explanation": "Deep nesting creates 'arrow code' that's hard to follow. Use early returns, extract functions, or refactor logic to reduce nesting.",
+          "example": {
+            "bad": "if (a) { if (b) { if (c) { if (d) { /* code */ } } } }",
+            "good": "if (!a) return;\nif (!b) return;\nif (!c) return;\nif (!d) return;\n/* code */"
+          },
+          "points_deduction": 7
+        },
+        {
+          "id": "CS002",
+          "name": "duplicate_code",
+          "severity": "warning",
+          "message": "Duplicate code blocks detected. Consider extracting to a reusable function.",
+          "explanation": "Copy-pasting code creates maintenance nightmares. If you need to fix a bug, you'll have to fix it in multiple places. Extract common logic into functions.",
+          "example": {
+            "bad": "// Same validation in 3 places",
+            "good": "function validateUser(user) { /* validation logic */ }"
+          },
+          "points_deduction": 6
+        },
+        {
+          "id": "CS003",
+          "name": "hardcoded_values",
+          "severity": "warning",
+          "pattern": "(['\"]) (https?://[^'\"]+|/api/[^'\"]+)\\1",
+          "message": "Hardcoded URLs or API endpoints. Use configuration constants.",
+          "explanation": "Hardcoded values make it hard to change settings across environments (dev, staging, production). Use config files or environment variables.",
+          "example": {
+            "bad": "fetch('https://api.example.com/users');",
+            "good": "const API_URL = config.apiUrl; fetch(`${API_URL}/users`);"
+          },
+          "points_deduction": 5
+        },
+        {
+          "id": "CS004",
+          "name": "unused_variables",
+          "severity": "warning",
+          "pattern": "(?:let|const|var)\\s+(\\w+)\\s*=",
+          "message": "Variable declared but never used. Remove unused code.",
+          "explanation": "Unused variables clutter code and confuse readers. They might wonder if they're missing something or if the code is incomplete.",
+          "example": {
+            "bad": "const unusedVar = 42; // never referenced",
+            "good": "// Just remove it if it's not needed"
+          },
+          "points_deduction": 2
+        },
+        {
+          "id": "CS005",
+          "name": "commented_code",
+          "severity": "suggestion",
+          "pattern": "^\\s*//\\s*(?:function|const|let|var|if|for|while)",
+          "message": "Commented-out code should be removed. Use version control instead.",
+          "explanation": "Commented code creates confusion. Is it important? Should it be restored? Use Git to track old code - delete commented sections.",
+          "example": {
+            "bad": "// function oldFunction() { /* ... */ }",
+            "good": "// If you need old code, check Git history"
+          },
+          "points_deduction": 2
+        }
+      ]
+    },
+    "best_practices": { "priority": "medium", "rules": [] },
+    "naming_conventions": { "priority": "medium", "rules": [] }
+  },
+  "scoring_weights": {
+    "errors": -10,
+    "warnings": -5,
+    "suggestions": -2,
+    "readability_factor": 0.3,
+    "structure_factor": 0.4,
+    "naming_factor": 0.3,
+    "base_score": 100
+  },
+  "thresholds": {
+    "excellent": 90,
+    "good": 70,
+    "needs_improvement": 50,
+    "poor": 30
+  }
+}

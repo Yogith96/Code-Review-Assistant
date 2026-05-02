@@ -1,0 +1,143 @@
+/* ════════════════════════════════════════════════════════
+   base.css — Reset, variables, typography, global styles
+   ════════════════════════════════════════════════════════ */
+
+:root {
+  /* Common variables */
+  --accent:        #5b4fcf;
+  --accent-light:  #ede9ff;
+  --score-ring:    #5b4fcf;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 3px 10px rgba(0,0,0,0.05);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --header-height: 52px;
+}
+
+:root[data-theme="light"] {
+  --bg-base:       #cccccc;
+  --bg-panel:      #dddddd; /* Light Color */
+  --bg-card:       #dddddd;
+  --bg-code:       #dddddd;
+  --bg-header-main:#dddddd; /* Main header */
+  --bg-header-sub: #2c2c2c; /* Sub headers */
+  --bg-button:     #2c2c2c;
+  --bg-button-hover: #1a1a1a;
+
+  --text-primary:  #2c2c2c;
+  --text-secondary:#555555;
+  --text-muted:    #888888;
+  --text-code:     #2c2c2c;
+  --text-header-main: #2c2c2c;
+  --text-header-sub:  #dddddd;
+
+  --border:        #cccccc;
+  --border-code:   #bbbbbb;
+  --border-header: #444444;
+
+  --resizer-bg:    #2c2c2c;
+  --resizer-line:  #dddddd;
+
+  --console-bg:    #dddddd;
+  --console-text:  #2c2c2c;
+
+  /* Formatted specifically for Light Theme readability */
+  --error-color:   #d32f2f;
+  --error-bg:      #fff0f0;
+  --error-border:  #ffd6d6;
+  --error-light:   #ffeaea;
+  
+  --warning-color: #d97c20;
+  --warning-bg:    #fff7ed;
+  --warning-border:#fde8c3;
+  --warning-light: #fff3e0;
+  
+  --suggest-color: #7c52e0;
+  --suggest-bg:    #f5f0ff;
+  --suggest-border:#e2d4ff;
+  --suggest-light: #ede8ff;
+  
+  --tip-color:     #1aaa6b;
+  --tip-bg:        #edfdf5;
+  --tip-border:    #b8f0d8;
+  --tip-light:     #e6fbf2;
+  
+  --console-error: #d32f2f;
+  --console-warn:  #d97c20;
+  --console-info:  #1976d2;
+  --console-success: #1aaa6b;
+}
+
+:root[data-theme="dark"] {
+  --bg-base:       #151515;
+  --bg-panel:      #1e1e1e; /* Dark Color */
+  --bg-card:       #1e1e1e;
+  --bg-code:       #1e1e1e;
+  --bg-header-main:#1e1e1e; /* Main header */
+  --bg-header-sub: #2c2c2c; /* Sub headers (Light relative color) */
+  --bg-button:     #2c2c2c;
+  --bg-button-hover: #3a3a3a;
+
+  --text-primary:  #dddddd;
+  --text-secondary:#aaaaaa;
+  --text-muted:    #888888;
+  --text-code:     #dddddd;
+  --text-header-main: #dddddd;
+  --text-header-sub:  #dddddd; /* Text must be light for #2c2c2c background */
+
+  --border:        #333333;
+  --border-code:   #333333;
+  --border-header: #444444;
+
+  --resizer-bg:    #2c2c2c;
+  --resizer-line:  #dddddd;
+
+  --console-bg:    #1e1e1e;
+  --console-text:  #dddddd;
+
+  /* Formatted specifically for Dark Theme readability */
+  --error-color:   #ff8a80;
+  --error-bg:      #3b1e1e;
+  --error-border:  #5e2a2a;
+  --error-light:   #4e2424;
+  
+  --warning-color: #ffd180;
+  --warning-bg:    #3b2d18;
+  --warning-border:#5c4422;
+  --warning-light: #4a361a;
+  
+  --suggest-color: #b388ff;
+  --suggest-bg:    #2a2040;
+  --suggest-border:#423066;
+  --suggest-light: #362852;
+  
+  --tip-color:     #b9f6ca;
+  --tip-bg:        #183321;
+  --tip-border:    #265234;
+  --tip-light:     #1f4229;
+
+  --console-error: #ff8a80;
+  --console-warn:  #ffd180;
+  --console-info:  #80d8ff;
+  --console-success: #b9f6ca;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }

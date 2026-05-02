@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "examples": [
+    {
+      "id": "example_001",
+      "title": "Beginner Code with Common Mistakes",
+      "language": "javascript",
+      "difficulty": "beginner",
+      "description": "A simple function with multiple beginner mistakes including var usage, poor naming, and missing error handling",
+      "code": "var x = 10;\nvar y = 20;\n\nfunction calc(a, b) {\n    var result = a + b;\n    console.log(result);\n    return result;\n}\n\nfunction getData() {\n    fetch('https://api.example.com/data')\n        .then(response => response.json())\n        .then(data => {\n            console.log(data);\n        });\n}\n\nvar arr = [1, 2, 3, 4, 5];\nfor (var i = 0; i < arr.length; i++) {\n    console.log(arr[i]);\n}",
+      "expectedIssues": [
+        "var usage (should use const/let)",
+        "Poor variable names (x, y, a, b)",
+        "console.log in production code",
+        "No error handling in fetch",
+        "Missing semicolons in some places"
+      ],
+      "improvedVersion": "const firstNumber = 10;\nconst secondNumber = 20;\n\nfunction calculateSum(num1, num2) {\n    const result = num1 + num2;\n    return result;\n}\n\nasync function getData() {\n    try {\n        const response = await fetch('https://api.example.com/data');\n        const data = await response.json();\n        return data;\n    } catch (error) {\n        console.error('Failed to fetch data:', error);\n        throw error;\n    }\n}\n\nconst numbers = [1, 2, 3, 4, 5];\nnumbers.forEach(number => {\n    console.log(number);\n});"
+    }
+  ],
+  "quickTestCases": [
+    {
+      "name": "Simple function",
+      "code": "function add(x, y) {\n    var result = x + y;\n    console.log(result);\n    return result;\n}"
+    }
+  ]
+}

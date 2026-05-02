@@ -1,0 +1,386 @@
+{
+  "version": "1.0.0",
+  "categories": {
+    "variables": {
+      "title": "Variables & Declaration",
+      "icon": "📦",
+      "tips": [
+        {
+          "id": "TIP_VAR_001",
+          "title": "Stop Using 'var' - Here's Why",
+          "level": "beginner",
+          "content": "The 'var' keyword has function scope, which can cause unexpected bugs. Modern JavaScript introduced 'let' (for variables) and 'const' (for constants) with block scope, making your code more predictable and safer.",
+          "example": {
+            "problem": "var x = 1;\nif (true) {\n  var x = 2; // Same variable!\n  console.log(x); // 2\n}\nconsole.log(x); // Also 2 😱",
+            "solution": "let x = 1;\nif (true) {\n  let x = 2; // Different variable\n  console.log(x); // 2\n}\nconsole.log(x); // Still 1 ✅"
+          },
+          "keyTakeaway": "Always use 'const' by default. Only use 'let' when you need to reassign the variable."
+        },
+        {
+          "id": "TIP_VAR_002",
+          "title": "The Art of Naming Variables",
+          "level": "beginner",
+          "content": "Good variable names are like good comments - they explain what the code does without you needing to read every line. Your code should tell a story.",
+          "guidelines": [
+            "Use descriptive names: 'userAge' not 'a'",
+            "Be specific: 'maxLoginAttempts' not 'max'",
+            "Use camelCase for variables: 'firstName' not 'first_name'",
+            "Avoid abbreviations unless widely known: 'HTML' is OK, 'usrNm' is not",
+            "Boolean names should ask a question: 'isActive', 'hasPermission', 'canEdit'"
+          ],
+          "example": {
+            "bad": "let d = 7; // What is d?",
+            "good": "let daysUntilExpiry = 7; // Crystal clear!"
+          },
+          "keyTakeaway": "If you need a comment to explain a variable name, the name isn't good enough."
+        },
+        {
+          "id": "TIP_VAR_003",
+          "title": "Const by Default Pattern",
+          "level": "beginner",
+          "content": "Start with 'const' for every variable. Only switch to 'let' if you realize you need to reassign it. This makes your code more predictable because readers know the value won't change.",
+          "benefits": [
+            "Prevents accidental reassignment bugs",
+            "Makes code easier to reason about",
+            "Signals intent clearly to other developers",
+            "Helps catch logical errors early"
+          ],
+          "example": {
+            "bad": "let name = 'John'; // Never reassigned",
+            "good": "const name = 'John'; // Clear that it won't change"
+          },
+          "keyTakeaway": "Const doesn't mean immutable for objects/arrays - it means the reference can't be reassigned."
+        }
+      ]
+    },
+    "functions": {
+      "title": "Functions & Methods",
+      "icon": "⚡",
+      "tips": [
+        {
+          "id": "TIP_FUNC_001",
+          "title": "Keep Functions Small and Focused",
+          "level": "beginner",
+          "content": "A function should do ONE thing and do it well. If you can't explain what a function does in one sentence, it's probably doing too much.",
+          "rules": [
+            "Aim for under 20-30 lines per function",
+            "If you have multiple 'and' statements describing it, split it up",
+            "Each function should have a single responsibility",
+            "Extract complex logic into helper functions"
+          ],
+          "example": {
+            "bad": "function processUser() {\n  // validate input (20 lines)\n  // save to database (15 lines)\n  // send email (10 lines)\n  // log activity (5 lines)\n}",
+            "good": "function processUser(user) {\n  validateUser(user);\n  saveUser(user);\n  sendWelcomeEmail(user);\n  logActivity('user_created', user.id);\n}"
+          },
+          "keyTakeaway": "Small functions are easier to test, debug, and reuse."
+        },
+        {
+          "id": "TIP_FUNC_002",
+          "title": "Arrow Functions for Cleaner Code",
+          "level": "intermediate",
+          "content": "Arrow functions provide shorter syntax and don't bind their own 'this', making them perfect for callbacks and functional programming patterns.",
+          "whenToUse": [
+            "Array methods (map, filter, reduce)",
+            "Callbacks and event handlers",
+            "When you don't need 'this' binding",
+            "Short, single-expression functions"
+          ],
+          "example": {
+            "traditional": "const doubled = numbers.map(function(n) {\n  return n * 2;\n});",
+            "arrow": "const doubled = numbers.map(n => n * 2);",
+            "note": "Even shorter for single expressions!"
+          },
+          "keyTakeaway": "Arrow functions are not just syntactic sugar - they handle 'this' differently."
+        },
+        {
+          "id": "TIP_FUNC_003",
+          "title": "Function Parameters - Less is More",
+          "level": "intermediate",
+          "content": "Functions with many parameters are hard to call correctly. If you need more than 3-4 parameters, consider using an options object.",
+          "problem": "function createUser(name, email, age, phone, address, city, country, zip) { }",
+          "solution": "function createUser({ name, email, age, phone, address, city, country, zip }) { }",
+          "benefits": [
+            "Order doesn't matter",
+            "Easy to add optional parameters",
+            "Self-documenting calls",
+            "Can provide defaults easily"
+          ],
+          "example": {
+            "bad": "createUser('John', 'john@example.com', 30, '555-1234', '123 St', 'NYC', 'USA', '10001');",
+            "good": "createUser({\n  name: 'John',\n  email: 'john@example.com',\n  age: 30,\n  phone: '555-1234'\n});"
+          },
+          "keyTakeaway": "Options objects make function calls more readable and flexible."
+        }
+      ]
+    },
+    "async": {
+      "title": "Asynchronous JavaScript",
+      "icon": "⏱️",
+      "tips": [
+        {
+          "id": "TIP_ASYNC_001",
+          "title": "Always Handle Errors in Async Code",
+          "level": "beginner",
+          "content": "Unhandled promise rejections can crash your app. ALWAYS include error handling with .catch() or try/catch blocks.",
+          "danger": "Missing error handling is one of the most common causes of production bugs!",
+          "example": {
+            "dangerous": "fetch('/api/data')\n  .then(res => res.json())\n  .then(data => console.log(data));\n// What if the network fails? 💥",
+            "safe": "fetch('/api/data')\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(error => {\n    console.error('Failed:', error);\n    showErrorMessage();\n  });"
+          },
+          "keyTakeaway": "Every promise chain needs a .catch(). Every async function needs try/catch."
+        },
+        {
+          "id": "TIP_ASYNC_002",
+          "title": "Async/Await vs Promises",
+          "level": "intermediate",
+          "content": "Async/await makes asynchronous code look synchronous, which is much easier to read and debug than nested .then() chains.",
+          "comparison": {
+            "promises": "fetch('/user')\n  .then(res => res.json())\n  .then(user => fetch(`/posts/${user.id}`))\n  .then(res => res.json())\n  .then(posts => console.log(posts))\n  .catch(err => console.error(err));",
+            "asyncAwait": "try {\n  const userRes = await fetch('/user');\n  const user = await userRes.json();\n  const postsRes = await fetch(`/posts/${user.id}`);\n  const posts = await postsRes.json();\n  console.log(posts);\n} catch (error) {\n  console.error(error);\n}"
+          },
+          "benefits": [
+            "Reads like synchronous code",
+            "Easier to debug with breakpoints",
+            "Better error stack traces",
+            "Can use regular try/catch"
+          ],
+          "keyTakeaway": "Use async/await for cleaner asynchronous code, but don't forget error handling!"
+        },
+        {
+          "id": "TIP_ASYNC_003",
+          "title": "Avoid Callback Hell",
+          "level": "beginner",
+          "content": "Deeply nested callbacks (callback hell) make code hard to read and maintain. Modern JavaScript provides better alternatives.",
+          "example": {
+            "hell": "getData(function(a) {\n  getMoreData(a, function(b) {\n    getMoreData(b, function(c) {\n      getMoreData(c, function(d) {\n        // 😱 The pyramid of doom!\n      });\n    });\n  });\n});",
+            "heaven": "async function fetchAllData() {\n  const a = await getData();\n  const b = await getMoreData(a);\n  const c = await getMoreData(b);\n  const d = await getMoreData(c);\n  return d; // ✨ Clean and clear!\n}"
+          },
+          "keyTakeaway": "If you see more than 2-3 levels of nesting, it's time to refactor."
+        }
+      ]
+    },
+    "code_structure": {
+      "title": "Code Organization",
+      "icon": "🏗️",
+      "tips": [
+        {
+          "id": "TIP_STRUCT_001",
+          "title": "The DRY Principle (Don't Repeat Yourself)",
+          "level": "beginner",
+          "content": "If you're copy-pasting code, you're doing it wrong. Repeated code means multiple places to fix bugs and update logic.",
+          "redFlags": [
+            "Copying and pasting code blocks",
+            "Similar functions with slight variations",
+            "Same validation logic in multiple places"
+          ],
+          "solution": "Extract common logic into reusable functions or utilities.",
+          "example": {
+            "wet": "// WET: Write Everything Twice\nif (user.age < 18) {\n  showError('Too young');\n  return;\n}\nif (user.email.length === 0) {\n  showError('Email required');\n  return;\n}\n// Repeated in 5 different places...",
+            "dry": "function validateUser(user) {\n  if (user.age < 18) throw new Error('Too young');\n  if (!user.email) throw new Error('Email required');\n}\n// Use everywhere with one line!"
+          },
+          "keyTakeaway": "Write code once, use it everywhere. Your future self will thank you."
+        },
+        {
+          "id": "TIP_STRUCT_002",
+          "title": "Avoid Deep Nesting with Early Returns",
+          "level": "intermediate",
+          "content": "Deep nesting creates 'arrow code' that's hard to follow. Use guard clauses and early returns to keep code flat.",
+          "example": {
+            "nested": "function processOrder(order) {\n  if (order) {\n    if (order.items.length > 0) {\n      if (order.user.isPremium) {\n        // Deep in the pyramid 😰\n        return calculatePremiumPrice(order);\n      }\n    }\n  }\n  return 0;\n}",
+            "flat": "function processOrder(order) {\n  if (!order) return 0;\n  if (order.items.length === 0) return 0;\n  if (!order.user.isPremium) return 0;\n  \n  return calculatePremiumPrice(order); // ✨\n}"
+          },
+          "benefits": [
+            "Easier to read and follow logic",
+            "Reduces cognitive load",
+            "Makes error conditions obvious",
+            "Prevents excessive indentation"
+          ],
+          "keyTakeaway": "Check for failure conditions first, then handle the happy path."
+        },
+        {
+          "id": "TIP_STRUCT_003",
+          "title": "Magic Numbers Need Names",
+          "level": "beginner",
+          "content": "Numbers like 86400 or 3.14159 have meaning to you now, but won't to others (or future you). Give them descriptive names.",
+          "example": {
+            "magic": "if (age > 18) { } // Why 18?\nsetTimeout(callback, 3600000); // What's this number?",
+            "named": "const LEGAL_ADULT_AGE = 18;\nif (age > LEGAL_ADULT_AGE) { }\n\nconst ONE_HOUR_MS = 3600000;\nsetTimeout(callback, ONE_HOUR_MS);"
+          },
+          "exceptions": [
+            "0, 1, -1 in simple contexts are usually OK",
+            "Array indices [0] don't need constants",
+            "Obvious multipliers (100 for percentages)"
+          ],
+          "keyTakeaway": "If a number has business meaning, give it a meaningful constant name."
+        }
+      ]
+    },
+    "best_practices": {
+      "title": "Modern JavaScript Best Practices",
+      "icon": "⭐",
+      "tips": [
+        {
+          "id": "TIP_BP_001",
+          "title": "Use === Instead of ==",
+          "level": "beginner",
+          "content": "The == operator performs type coercion which can lead to bizarre bugs. Always use === (strict equality) for predictable comparisons.",
+          "example": {
+            "dangerous": "0 == '0' // true (?!)\n'' == '0' // false (??)\nfalse == 'false' // false (???)\nfalse == '0' // true (🤯)",
+            "safe": "0 === '0' // false ✅\n'' === '0' // false ✅\nfalse === 'false' // false ✅\nfalse === '0' // false ✅"
+          },
+          "rule": "The only time to use == is when checking for null/undefined: value == null",
+          "keyTakeaway": "=== compares value AND type. No surprises, no bugs."
+        },
+        {
+          "id": "TIP_BP_002",
+          "title": "Template Literals for String Building",
+          "level": "beginner",
+          "content": "String concatenation with + is old-school and error-prone. Template literals (backticks) are cleaner and more powerful.",
+          "example": {
+            "oldWay": "const message = 'Hello ' + name + ', you have ' + count + ' messages.';\nconst multiline = 'Line 1\\n' + 'Line 2\\n' + 'Line 3';",
+            "newWay": "const message = `Hello ${name}, you have ${count} messages.`;\nconst multiline = `\n  Line 1\n  Line 2\n  Line 3\n`;"
+          },
+          "benefits": [
+            "Easier to read and write",
+            "Multi-line strings without \\n",
+            "Can embed expressions: ${2 + 2}",
+            "No more missing spaces or + signs"
+          ],
+          "keyTakeaway": "If you're building strings with variables, use template literals."
+        },
+        {
+          "id": "TIP_BP_003",
+          "title": "Destructuring for Cleaner Code",
+          "level": "intermediate",
+          "content": "Destructuring lets you extract multiple values from objects/arrays in one line, making code more concise and readable.",
+          "objectExample": {
+            "without": "const name = user.name;\nconst email = user.email;\nconst age = user.age;",
+            "with": "const { name, email, age } = user;"
+          },
+          "arrayExample": {
+            "without": "const first = colors[0];\nconst second = colors[1];",
+            "with": "const [first, second] = colors;"
+          },
+          "advanced": "// With defaults\nconst { name = 'Guest', role = 'user' } = user;\n\n// Rename variables\nconst { name: userName, email: userEmail } = user;\n\n// Function parameters\nfunction createUser({ name, email, age = 18 }) { }",
+          "keyTakeaway": "Destructuring reduces boilerplate and makes code more declarative."
+        },
+        {
+          "id": "TIP_BP_004",
+          "title": "Optional Chaining for Safe Property Access",
+          "level": "intermediate",
+          "content": "Accessing nested properties can throw errors if intermediate values are null/undefined. Optional chaining (?.) safely handles this.",
+          "problem": "// This crashes if user or address is undefined\nconst city = user.address.city;",
+          "oldSolution": "const city = user && user.address && user.address.city;",
+          "newSolution": "const city = user?.address?.city; // Returns undefined if any part is missing",
+          "examples": [
+            "user?.profile?.avatar // Safe nested access",
+            "onClick?.() // Safe function call",
+            "arr?.[0] // Safe array access"
+          ],
+          "keyTakeaway": "Use ?. when you're not sure if a property exists. It prevents runtime errors."
+        }
+      ]
+    },
+    "debugging": {
+      "title": "Debugging & Error Handling",
+      "icon": "🐛",
+      "tips": [
+        {
+          "id": "TIP_DEBUG_001",
+          "title": "Remove Console.log Before Production",
+          "level": "beginner",
+          "content": "Console.log is great for debugging, but leaving them in production code is unprofessional and can cause performance issues.",
+          "problems": [
+            "Slows down application performance",
+            "Can expose sensitive data in browser console",
+            "Clutters console making real issues hard to find",
+            "Looks unprofessional to other developers"
+          ],
+          "alternatives": [
+            "Use a proper logging library (winston, pino)",
+            "Set up conditional logging based on environment",
+            "Use debugger statements during development",
+            "Remove logs before committing code"
+          ],
+          "tip": "Create a custom logger: const log = process.env.NODE_ENV === 'dev' ? console.log : () => {};",
+          "keyTakeaway": "Debug logs are for development only. Clean them up before deployment."
+        },
+        {
+          "id": "TIP_DEBUG_002",
+          "title": "Write Meaningful Error Messages",
+          "level": "intermediate",
+          "content": "Generic error messages like 'Error occurred' are useless. Provide context about what went wrong and how to fix it.",
+          "example": {
+            "bad": "throw new Error('Error');",
+            "better": "throw new Error('Invalid email');",
+            "best": "throw new Error(`Invalid email format: ${email}. Expected format: user@domain.com`);"
+          },
+          "goodErrorMessages": [
+            "Include what went wrong",
+            "Include what was expected",
+            "Include the actual value that caused the error",
+            "Suggest how to fix it if possible"
+          ],
+          "keyTakeaway": "Your error messages should help developers fix issues quickly, not frustrate them."
+        }
+      ]
+    }
+  },
+  "general_tips": [
+    {
+      "id": "GENERAL_001",
+      "title": "Write Code for Humans, Not Machines",
+      "content": "Computers execute code, but humans maintain it. Always prioritize readability over cleverness.",
+      "quote": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. - Martin Fowler"
+    },
+    {
+      "id": "GENERAL_002",
+      "title": "Comments Explain WHY, Not WHAT",
+      "content": "Your code should be self-explanatory (the WHAT). Use comments to explain WHY you made certain decisions.",
+      "example": {
+        "bad": "// Increment i\ni++;",
+        "good": "// Skip first element as it's a header row\ni++;"
+      }
+    },
+    {
+      "id": "GENERAL_003",
+      "title": "Test Your Code",
+      "content": "Don't just check if it works - test edge cases, error conditions, and boundary values. Think about what could go wrong.",
+      "testCases": [
+        "Empty inputs",
+        "Null/undefined values",
+        "Very large numbers",
+        "Special characters",
+        "Concurrent operations"
+      ]
+    },
+    {
+      "id": "GENERAL_004",
+      "title": "Refactor Regularly",
+      "content": "As you learn and code grows, come back to refactor. Your code from 6 months ago will look different with your current knowledge.",
+      "signs": [
+        "You need to change the same logic in multiple places",
+        "Functions are getting too long",
+        "You find it hard to understand your own code",
+        "Adding features requires extensive changes"
+      ]
+    }
+  ],
+  "learning_resources": {
+    "beginner": [
+      "MDN Web Docs - JavaScript Guide",
+      "JavaScript.info - Modern JavaScript Tutorial",
+      "freeCodeCamp - JavaScript Algorithms and Data Structures"
+    ],
+    "intermediate": [
+      "You Don't Know JS (book series)",
+      "Eloquent JavaScript",
+      "JavaScript: The Good Parts"
+    ],
+    "advanced": [
+      "JavaScript Design Patterns",
+      "Clean Code by Robert C. Martin",
+      "Refactoring by Martin Fowler"
+    ]
+  }
+}
